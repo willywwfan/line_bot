@@ -8,7 +8,9 @@ ngrok http 8000
 
 paste to settings.py
 ALLOWED_HOSTS = [
+
     '5b25-36-234-32-154.ngrok.io'  #允許的網域名稱
+    
 ]
 
 paste to Line Developers Messaging API Webhook settings

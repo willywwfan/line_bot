@@ -22,7 +22,8 @@ py -3.8 manage.py runserver
 
 AWS solution
 
-set lambda_function.py to lambda in AWS (us-east-2)
+1. package the python file to .zip
+2. set lambda_function.py to lambda in AWS (us-east-2)
 
 
 Verify

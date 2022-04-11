@@ -21,3 +21,6 @@ C:\Users\socrateschch\Documents\src\line_bot\mylinebot>
 py -3.8 manage.py runserver
 
 Verify
+
+# reference:
+https://www.ecloudture.com/deploy-line-chatbot-using-aws-lambda-1/

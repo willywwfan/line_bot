@@ -20,4 +20,13 @@ runserver
 C:\Users\socrateschch\Documents\src\line_bot\mylinebot>
 py -3.8 manage.py runserver
 
+AWS solution
+
+1. package the python file to .zip
+2. set lambda_function.py to lambda in AWS (us-east-2)
+
+
 Verify
+
+# reference:
+https://www.ecloudture.com/deploy-line-chatbot-using-aws-lambda-1/

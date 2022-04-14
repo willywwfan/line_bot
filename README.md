@@ -26,7 +26,14 @@ AWS solution
 2. set lambda_function.py to lambda in AWS (us-east-2)
 
 
+Heroku postgresql connect with aws lambda
+
+https://github.com/jkehler/awslambda-psycopg2
+download the psycopg2-3.8 and rename as psycopg2, put into python before it compress.
+(PostgreSQL and psycopg2 build file)
+
 Verify
 
 # reference:
 https://www.ecloudture.com/deploy-line-chatbot-using-aws-lambda-1/
+https://github.com/jkehler/awslambda-psycopg2

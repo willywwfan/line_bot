@@ -73,7 +73,7 @@ class PostgresBaseManager:
             self.last3 = self.last3[1:] + [datas]
             # print("Data row = " + datas )
         
-        self.last3 = self.last3[0] + "\n" + self.last3[1] + "\n" + self.last3[2] + "\n"
+        self.last3 = self.last3[0] + "\n\t\n" + self.last3[1] + "\n\t\n" + self.last3[2]
 
 postgres_manager = PostgresBaseManager()
 

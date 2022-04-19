@@ -26,13 +26,14 @@ def lambda_handler(event, context):
 class PostgresBaseManager:
 
     def __init__(self):
-
         self.database = 'd9r8va4pq94vp5'
         self.user = 'vnnvynpuzipegu'
         self.password = 'e17d5a6ec332f03123b57b0fddd18a7bc5dcbda5908853191d84f293bab4bd3c'
         self.host = 'ec2-52-203-118-49.compute-1.amazonaws.com'
         self.port = '5432'
         self.conn = self.connectServerPostgresDb()
+
+        self.rawlimit = 2000
 
     def connectServerPostgresDb(self):
         """
@@ -71,9 +72,23 @@ class PostgresBaseManager:
             for data in row:
                 datas = datas + str(data) + ", "
             self.last3 = self.last3[1:] + [datas]
-            # print("Data row = " + datas )
         
         self.last3 = self.last3[0] + "\n\t\n" + self.last3[1] + "\n\t\n" + self.last3[2]
+    
+    def select(self, interval):
+        cur = self.conn.cursor()
+        if interval == "月":select_input = "month"
+        elif interval == "周" or "週":select_input = "week"
+        elif interval == "日":select_input = "day"
+        query = "SELECT * FROM accounts_table WHERE DATE_PART('" + select_input + "', date) = DATE_PART('" + select_input + "', NOW());"
+        cur.execute(query)
+        rows = cur.fetchall()
+        self.selected = ""
+        for row in rows:
+            datas = ""
+            for data in row:datas = datas + str(data) + ", "
+            self.selected += datas + "\n\t\n"
+        self.selected = self.selected[:-3]
 
 postgres_manager = PostgresBaseManager()
 
@@ -81,20 +96,38 @@ postgres_manager = PostgresBaseManager()
 line_bot_api = LineBotApi(os.environ['Channel_access_token'])
 handler = WebhookHandler(os.environ['Channel_secret'])
 
+def getnum(text):
+    seps = text.split()
+    nums = []
+    for sep in seps:
+        num = "0"
+        for string in sep:
+            if string.isdigit():num += string
+            else:num = "0"
+        nums += [int(num)]
+    return max(nums)
+
 def lambda_handler(event, context):
     @handler.add(MessageEvent, message=TextMessage)
     def handle_message(event):
-        if event.message.text[:2] == "記帳":
+        if "記帳" in event.message.text:
             text = event.message.text
-            num = int(text.split(" ")[-1])
+            text_message = ''.join([i for i in text if not i.isdigit() and i != " "]).replace("記帳","") #in
+            num = getnum(text) #in
             send_user = event.source.user_id
             profile = line_bot_api.get_profile(send_user)
-            send_user = profile.display_name
-            postgres_manager.insert(text,num,send_user)
+            display_user = profile.display_name #in
+            
+            postgres_manager.insert(text_message,num,display_user)
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text="上三筆資料:\n" + postgres_manager.last3))
+                TextSendMessage(text="記帳成功！上三筆資料:\n" + postgres_manager.last3))
                 # TextSendMessage(text=event.message.text))
+        if "查詢本" in event.message.text:
+            postgres_manager.select(event.message.text[-1])
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=postgres_manager.selected))
         else:
             line_bot_api.reply_message(
                 event.reply_token,

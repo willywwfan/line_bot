@@ -47,10 +47,10 @@ class PostgresBaseManager:
         """
         self.conn.close()
 
-    def insert(self,text,num):
+    def insert(self,text,num,send_user):
         cur = self.conn.cursor()
         date = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-        cur.execute("INSERT INTO accounts_table (owner_name, text, amount, date) VALUES (%s, %s, %s, %s);", ("Willy", text, num, date))
+        cur.execute("INSERT INTO accounts_table (owner_name, text, amount, date) VALUES (%s, %s, %s, %s);", (send_user, text, num, date))
         self.conn.commit()
 
         select = "SELECT MAX(record_no) FROM accounts_table"
@@ -86,9 +86,11 @@ def lambda_handler(event, context):
     def handle_message(event):
         if event.message.text[:2] == "記帳":
             text = event.message.text
-            postgres_manager = PostgresBaseManager()
             num = int(text.split(" ")[-1])
-            postgres_manager.insert(text,num)
+            send_user = event.source.user_id
+            profile = line_bot_api.get_profile(send_user)
+            send_user = profile.display_name
+            postgres_manager.insert(text,num,send_user)
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text="上三筆資料:\n" + postgres_manager.last3))

@@ -64,7 +64,7 @@ class PostgresBaseManager:
         self.conn.commit()
         deleted = cur.fetchall()
         
-        cur.execute("SELECT * FROM accounts_table;")
+        cur.execute("SELECT * FROM accounts_table ORDER BY date;")
         rows = cur.fetchall()
         self.last3 = [" "," "," "]
         for row in rows:
@@ -80,7 +80,7 @@ class PostgresBaseManager:
         if interval == "月":select_input = "month"
         elif interval == "周" or "週":select_input = "week"
         elif interval == "日":select_input = "day"
-        query = "SELECT * FROM accounts_table WHERE DATE_PART('" + select_input + "', date) = DATE_PART('" + select_input + "', NOW());"
+        query = "SELECT * FROM accounts_table WHERE DATE_PART('" + select_input + "', date) = DATE_PART('" + select_input + "', NOW()) ORDER BY date;"
         cur.execute(query)
         rows = cur.fetchall()
         self.selected = ""

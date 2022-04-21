@@ -78,7 +78,7 @@ class PostgresBaseManager:
     def select(self, interval):
         cur = self.conn.cursor()
         if interval == "月":select_input = "month"
-        elif interval == "周" or "週":select_input = "week"
+        elif interval == "周" or interval == "週":select_input = "week"
         elif interval == "日":select_input = "day"
         query = "SELECT * FROM accounts_table WHERE DATE_PART('" + select_input + "', date) = DATE_PART('" + select_input + "', NOW()) ORDER BY date;"
         cur.execute(query)

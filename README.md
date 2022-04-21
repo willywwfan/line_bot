@@ -30,7 +30,7 @@ Heroku postgresql connect with aws lambda
 
 https://github.com/jkehler/awslambda-psycopg2
 download the psycopg2-3.8 and rename as psycopg2, put into python before it compress.
-(PostgreSQL and psycopg2 build file)
+(PostgreSQL and psycopg2 build file)(with_ssl_support)
 
 Verify
 
